@@ -25,4 +25,5 @@ public class UserPublicController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
 }

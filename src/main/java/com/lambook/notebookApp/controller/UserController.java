@@ -14,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -37,6 +39,16 @@ public class UserController {
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/verify")
+    public ResponseEntity<?>userExist(){
+        Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+        String getUser=auth.getName();
+        Optional<Users>user=userService.findByUserName(getUser);
+        if(user.isPresent()){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 
     @GetMapping
     public ResponseEntity<?> greetings(){

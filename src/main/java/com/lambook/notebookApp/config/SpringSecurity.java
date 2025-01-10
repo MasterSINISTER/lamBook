@@ -36,7 +36,8 @@ public class SpringSecurity {
                         .anyRequest().permitAll()
                 )
                 .httpBasic(Customizer.withDefaults())  // Using HTTP Basic Authentication
-                .csrf(AbstractHttpConfigurer::disable); // Disable CSRF (if it's an API or stateless)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults()); // Disable CSRF (if it's an API or stateless)
 
         System.out.println("SecurityFilterChain configured.");
         return http.build();
