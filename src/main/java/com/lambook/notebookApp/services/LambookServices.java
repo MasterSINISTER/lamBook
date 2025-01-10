@@ -3,7 +3,10 @@ package com.lambook.notebookApp.services;
 import com.lambook.notebookApp.pages.Entries;
 import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.repo.LambookRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,12 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+@Slf4j
 @Component
 public class LambookServices {
     @Autowired
     private LambookRepo lambookRepo;
     @Autowired
     private UserServices userServices;
+
+    private final static Logger logger= LoggerFactory.getLogger(LambookServices.class);
 
     @Transactional
     public void saveEntry(Entries entry) {

@@ -6,10 +6,11 @@ import com.lambook.notebookApp.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("/admin")
@@ -29,5 +30,19 @@ public class AdminController {
     @PostMapping("/create-admin")
     public void createAdmin(@RequestBody Users users){
         userServices.saveAdmin(users);
+    }
+    @DeleteMapping("/delete-user/{username}")
+    public ResponseEntity<?>deleteUser(@PathVariable String username){
+        userServices.deleteUser(username);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+    @PutMapping("/update-power/{username}")
+    public ResponseEntity<?> updateRole(@PathVariable String username){
+        Optional<Users>user=userServices.findByUserName(username);
+        if(user.isPresent()){
+        user.get().getRoles().add("ADMIN");
+        return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

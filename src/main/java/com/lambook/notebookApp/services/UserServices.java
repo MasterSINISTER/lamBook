@@ -1,24 +1,24 @@
 package com.lambook.notebookApp.services;
 
+
 import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.repo.UserRepo;
-import org.bson.types.ObjectId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Slf4j
+@Service
 public class UserServices {
     @Autowired
     private UserRepo userRepo;
-
 
     private static final PasswordEncoder bCrypt = new BCryptPasswordEncoder();
 
@@ -30,6 +30,7 @@ public class UserServices {
         Optional<Users> existingUser = userRepo.findByUserName(users.getUserName());
 
         if (existingUser.isPresent() && !existingUser.get().getId().equals(users.getId())) {
+            log.error("User Name Already Taken");
             throw new IllegalArgumentException("Username already taken");
         }
 
@@ -38,12 +39,6 @@ public class UserServices {
 
         userRepo.save(users);
     }
-
-
-
-
-
-
 
     public void saveUser(Users user) {
         if (user.getId() != null) {  // Check if the user is being updated

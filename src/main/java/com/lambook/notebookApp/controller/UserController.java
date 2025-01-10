@@ -3,6 +3,7 @@ package com.lambook.notebookApp.controller;
 import com.lambook.notebookApp.pages.Entries;
 import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.services.UserServices;
+import com.lambook.notebookApp.services.WeatherService;
 import org.apache.catalina.User;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
@@ -18,13 +19,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
     @Autowired
     private UserServices userService;
+
+    @Autowired
+    private WeatherService weatherService;
 
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
@@ -40,11 +42,13 @@ public class UserController {
        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<?>deleteUser(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        String username=authentication.getName();
-        userService.deleteUser(username);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+    @GetMapping
+    public ResponseEntity<?> greetings(){
+        Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+        double currentWeather=((weatherService.getWeather("Indore").getMain().getTemp()-32))/1.8;
+        return new ResponseEntity<>("Hi "+auth.getName()+" Weather Feels Like "+ currentWeather,HttpStatus.OK);
     }
+
+
 }
