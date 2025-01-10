@@ -22,20 +22,20 @@ public class UserServices {
 
     private static final PasswordEncoder bCrypt = new BCryptPasswordEncoder();
 
-    public void saveNewUser(Users users) {
-        if (users == null) {
-            throw new IllegalArgumentException("User details cannot be null");
-        }
-
-        Optional<Users> existingUser = userRepo.findByUserName(users.getUserName());
-
-        if (existingUser.isPresent() && !existingUser.get().getId().equals(users.getId())) {
-            log.error("User Name Already Taken");
-            throw new IllegalArgumentException("Username already taken");
-        }
-
-        // Always encode the password before saving
-        users.setPassword(bCrypt.encode(users.getPassword()));
+    public void updateUser(Users users) {
+//        if (users == null) {
+//            throw new IllegalArgumentException("User details cannot be null");
+//        }
+//
+//        Optional<Users> existingUser = userRepo.findByUserName(users.getUserName());
+//
+//        if (existingUser.isPresent() && !existingUser.get().getId().equals(users.getId())) {
+//            log.error("User Name Already Taken");
+//            throw new IllegalArgumentException("Username already taken");
+//        }
+//
+//        // Always encode the password before saving
+//        users.setPassword(bCrypt.encode(users.getPassword()));
 
         userRepo.save(users);
     }
@@ -49,11 +49,13 @@ public class UserServices {
                 if (!user.getPassword().equals(existingPassword)) {
                     user.setPassword(bCrypt.encode(user.getPassword()));
                     user.setRoles(Arrays.asList("USER"));
+                    user.setName(user.getUserName().substring(0,4));
                 }
             }
         } else {
             user.setPassword(bCrypt.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER"));
+            user.setName(user.getUserName().substring(0,4));
         }
         userRepo.save(user);
 
@@ -70,11 +72,13 @@ public class UserServices {
                 if (!user.getPassword().equals(existingPassword)) {
                     user.setPassword(bCrypt.encode(user.getPassword()));
                     user.setRoles(Arrays.asList("USER","ADMIN"));
+                    user.setName(user.getUserName().substring(0,4));
                 }
             }
         } else {
             user.setPassword(bCrypt.encode(user.getPassword()));
             user.setRoles(Arrays.asList("USER","ADMIN"));
+            user.setName(user.getUserName().substring(0,4));
         }
         userRepo.save(user);
     }
@@ -98,6 +102,8 @@ public class UserServices {
 
         userRepo.deleteAll();
     }
+
+
 
 
     public Optional<Users> findByUserName(String userName) {

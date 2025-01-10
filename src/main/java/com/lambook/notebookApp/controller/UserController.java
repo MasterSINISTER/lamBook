@@ -1,12 +1,7 @@
 package com.lambook.notebookApp.controller;
-
-import com.lambook.notebookApp.pages.Entries;
 import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.services.UserServices;
 import com.lambook.notebookApp.services.WeatherService;
-import org.apache.catalina.User;
-import org.apache.coyote.Response;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

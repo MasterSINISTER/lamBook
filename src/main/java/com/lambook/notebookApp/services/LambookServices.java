@@ -33,9 +33,11 @@ public class LambookServices {
 
         if (users.isPresent()) {
             Users user = users.get();
+            entry.setOwner(users.get().getUserName());
             Entries saved = lambookRepo.save(entry);
             user.getEntries().add(saved);
             userServices.saveUser(user);
+
         } else {
             throw new RuntimeException("User not found with username: " + getUser);
         }

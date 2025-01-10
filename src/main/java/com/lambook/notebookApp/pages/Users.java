@@ -20,6 +20,8 @@ import java.util.List;
 public class Users {
     @Id
     private ObjectId id;
+    @NonNull
+    private String name;
     @Indexed(unique = true)
     @NonNull
     private String userName;

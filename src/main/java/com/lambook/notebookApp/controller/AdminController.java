@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,11 +38,14 @@ public class AdminController {
         userServices.deleteUser(username);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+
     @PutMapping("/update-power/{username}")
     public ResponseEntity<?> updateRole(@PathVariable String username){
         Optional<Users>user=userServices.findByUserName(username);
         if(user.isPresent()){
         user.get().getRoles().add("ADMIN");
+        userServices.updateUser(user.get());
         return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

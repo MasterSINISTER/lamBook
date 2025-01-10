@@ -18,4 +18,6 @@ public class Entries {
     @NonNull
     private String Description;
     private String Tag;
+    @NonNull
+    private String Owner;
 }
