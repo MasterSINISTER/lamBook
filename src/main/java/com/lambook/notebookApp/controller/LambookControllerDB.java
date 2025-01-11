@@ -5,6 +5,7 @@ import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.services.LambookServices;
 import com.lambook.notebookApp.services.UserServices;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -171,16 +172,16 @@ public class LambookControllerDB {
 
 
     @DeleteMapping("/delete/{entryID}")
-    public String deleteId(@PathVariable ObjectId entryID) {
+    public ResponseEntity<?> deleteId(@PathVariable String entryID) {
+        ObjectId entry=new ObjectId(entryID);
         Authentication auth=SecurityContextHolder.getContext().getAuthentication();
         String currentUser=auth.getName();
-        log.info("Deleting entry with ID: {} for user: {}", entryID, currentUser);
-
-        lambookService.deleteEntry(currentUser, entryID);
-
-        log.info("Entry deleted successfully with ID: {}", entryID);
-
-        return "Entry Deleted Successfully";
+        log.info("Deleting entry with ID: {} for user: {}", entry, currentUser);
+        if(currentUser!=null){
+        lambookService.deleteEntry(currentUser, entry);
+        return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 //    @DeleteMapping("/deleteAll")

@@ -39,14 +39,14 @@ function Register() {
 
       if (response.status === 200) {
         console.log("User successfully registered 😊");
-        navigate("/dashboard");
+        navigate("/");
       }
     } catch (err) {
       console.error(err);
       setError("Something Went Wrong! 😒");
       setTimeout(() => {
         setError("");
-      },3000);
+      }, 3000);
     }
   };
 

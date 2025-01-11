@@ -19,7 +19,10 @@ function Login() {
           },
         });
   
-        if (response.status==200) {
+        if (response.status == 200) {
+          const authToken= btoa(`${username}:${password}`);
+          localStorage.setItem('authToken', authToken);
+          localStorage.setItem('username', username);
           // Successful login
           setError('Login Was Successfull');
           navigate('/dashboard'); // Redirect to a dashboard or home page
