@@ -52,7 +52,7 @@ function Register() {
 
   return (
     <>
-      <Heading />
+      <Heading title="Register"/>
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Join Our Lam Family</p>
         <p className="message">Signup now and get full access to our Lam. </p>

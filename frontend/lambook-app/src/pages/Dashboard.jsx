@@ -22,7 +22,6 @@ const style = {
   border: "1px solid rgba(255, 255, 255, 0.18)", // Light border with transparency // This can be used if you want the background to match the theme color
   p: 4, // Padding
 };
-
 function Dashboard() {
   const [entries, setEntries] = useState([]);
   const [error, setError] = useState("");
@@ -34,6 +33,7 @@ function Dashboard() {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
+
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -54,10 +54,16 @@ function Dashboard() {
         setEntries(data);
       } else {
         setError("Failed to fetch entries. Please try again later.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
       setError("Failed to fetch entries. Please try again later.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 
@@ -77,6 +83,8 @@ function Dashboard() {
         method,
         headers: {
           "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers": "Content-Type",
           Authorization: `Basic ${authToken}`,
         },
         body: JSON.stringify({
@@ -92,30 +100,46 @@ function Dashboard() {
         setFormData({ title: "", description: "", tag: "" });
       } else {
         setError("Failed to add entry. Please try again later.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
       setError("Failed to add entry. Please try again later.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 
   const handleDelete = async (id) => {
     try {
       const authToken = localStorage.getItem("authToken");
-      const response = await fetch(`http://localhost:8080/book/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Basic ${authToken}`,
-        },
-      });
-      if (response.status === 200) {
+      const response = await fetch(
+        `http://localhost:8080/book/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Basic ${authToken}`,
+          },
+        }
+      );
+      if (response.status == 200) {
         fetchEntries();
       } else {
         setError("Failed to delete entry. Please try again later.");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
       }
     } catch (error) {
       console.error(error);
       setError("Failed to delete entry. Please try again later.");
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     }
   };
 
@@ -153,9 +177,9 @@ function Dashboard() {
       <h1>
         Welcome to DashBoard {localStorage.getItem("username").toUpperCase()}
       </h1>
-      <EditNoteIcon></EditNoteIcon>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <EditNoteIcon sx={{ fontSize: 35, margin: 0 }}></EditNoteIcon>
       <button
-      
         onClick={handleAdd}
         className="add-entry-button"
         style={{
@@ -163,15 +187,14 @@ function Dashboard() {
           backgroundColor: "transparent",
           border: "none",
           cursor: "pointer",
-          fontFamily: "Major Mono Display",
+          fontFamily: "Chakra Petch",
+          fontWeight: "bold",
           fontSize: "20px",
           margin: "10px",
         }}
       >
         Add New Entry
-        
       </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
       {entries.length > 0 ? (
         <div className="cards-container">
           {entries.map((entry) => (
@@ -188,14 +211,13 @@ function Dashboard() {
               >
                 {entry.description}
               </p>
-              <p
-                className="card-content"
-                style={{ fontFamily: "Playwrite AU SA" }}
-              >
+              <p className="card-tag" style={{ fontFamily: "Playwrite AU SA" }}>
                 {entry.tag}
               </p>
               <button onClick={() => handleEdit(entry)}>Edit</button>
-              <button onClick={() => handleDelete(entry.id)}>Delete</button>
+              <button onClick={() => handleDelete(entry.id.toString())}>
+                Delete
+              </button>
             </div>
           ))}
         </div>
@@ -311,7 +333,6 @@ function Dashboard() {
                 <MenuItem value="personal">Personal</MenuItem>
                 <MenuItem value="important">Important</MenuItem>
                 <MenuItem value="shopping">Shopping</MenuItem>
-                {/* Add more tags as needed */}
               </Select>
             </label>
             <br></br>

@@ -97,6 +97,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequestMapping("/book")
+
+
+@CrossOrigin
 public class LambookControllerDB {
 
     @Autowired
@@ -156,10 +159,6 @@ public class LambookControllerDB {
     @PostMapping
     public ResponseEntity<Entries> createEntries(@RequestBody Entries entry) {
         try {
-//            log.info("Creating new entry...");
-//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//            String username = authentication.getName();
-//            log.info("Authenticated username: {}", username);
             lambookService.saveEntry(entry);
 //            log.info("Entry created successfully for user: {}", username);
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -179,7 +178,8 @@ public class LambookControllerDB {
         log.info("Deleting entry with ID: {} for user: {}", entry, currentUser);
         if(currentUser!=null){
         lambookService.deleteEntry(currentUser, entry);
-        return new ResponseEntity<>(HttpStatus.OK);
+            log.info("CORS Config applied for endpoint: /book/delete/{id}");
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

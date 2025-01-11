@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
+import Heading from "../components/Heading";
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -44,6 +45,7 @@ function Login() {
 
   return (
     <>
+    <Heading title="LamBook"></Heading>
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Get to Your Notes!</p>
         <p className="message">Sign In to get started !</p>

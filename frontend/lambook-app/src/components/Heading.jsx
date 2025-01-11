@@ -1,9 +1,9 @@
 import React from 'react'
 import "../styles/Home.css"
-function Heading() {
+function Heading(props) {
   return (
    <>
-    <h1 id='title'>LamBook</h1>
+    <h1 id='title'>{props.title}</h1>
    </>
   )
 }

@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.*;
 
@@ -56,7 +57,7 @@ public class LambookServices {
 
         return lambookRepo.findById(String.valueOf(id));
     }
-
+    @CrossOrigin(origins = "http://localhost:3000")
     public void deleteEntry(String username, ObjectId entryID) {
         Optional<Users> user = userServices.findByUserName(username);
         if (user.isPresent()) {
