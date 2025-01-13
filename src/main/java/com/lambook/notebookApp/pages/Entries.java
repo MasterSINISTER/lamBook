@@ -20,4 +20,6 @@ public class Entries {
     private String Tag;
     @NonNull
     private String Owner;
+    @NonNull
+    private long entryID;
 }

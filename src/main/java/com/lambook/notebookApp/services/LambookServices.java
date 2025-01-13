@@ -35,9 +35,13 @@ public class LambookServices {
         if (users.isPresent()) {
             Users user = users.get();
             entry.setOwner(users.get().getUserName());
+            int randomNumber= (int)(Math.random() * (40000 - 10000 + 1)) + 10000;
+            entry.setEntryID(randomNumber);
             Entries saved = lambookRepo.save(entry);
             user.getEntries().add(saved);
+
             userServices.saveUser(user);
+
 
         } else {
             throw new RuntimeException("User not found with username: " + getUser);
@@ -57,13 +61,17 @@ public class LambookServices {
 
         return lambookRepo.findById(String.valueOf(id));
     }
-    @CrossOrigin(origins = "http://localhost:3000")
-    public void deleteEntry(String username, ObjectId entryID) {
+
+
+    public void deleteEntry(String username, long entryID) {
         Optional<Users> user = userServices.findByUserName(username);
         if (user.isPresent()) {
-            user.get().getEntries().removeIf(x -> x.getId().equals(entryID));
-            userServices.saveUser(user.get());  // Save the updated user
-            lambookRepo.deleteById(String.valueOf(entryID));  // Delete the entry
+            boolean entryRemoved = user.get().getEntries().removeIf(x -> x.getEntryID()==entryID);
+            if(entryRemoved){
+            userServices.saveUser(user.get());
+            log.info("Working Till Here");// Save the updated user
+            lambookRepo.deleteByEntryID(entryID);  // Delete the entry
+            }
         } else {
             throw new RuntimeException("User not found with id: " + username);  // Or handle as needed
         }

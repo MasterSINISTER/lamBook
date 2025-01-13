@@ -8,6 +8,8 @@ import PrivateRoute from "./service/PrivateRoute";
 import AdminPortal from "./pages/AdminPortal";
 import PrivateRouteAdmin from "./service/PrivateRouteAdmin";
 import AdminDashboard from "./pages/AdminDashboard";
+import Account from "./pages/Account";
+import PrivateRouteAccounts from "./service/PrivateRouteAccounts";
 
 function App() {
   // const express = require("express");
@@ -28,6 +30,15 @@ function App() {
                 {" "}
                 <Dashboard />{" "}
               </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/account"
+            element={
+              <PrivateRouteAccounts>
+                <Account />
+              </PrivateRouteAccounts>
             }
           />
 

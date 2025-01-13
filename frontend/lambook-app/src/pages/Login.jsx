@@ -48,7 +48,7 @@ function Login() {
     <Heading title="LamBook"></Heading>
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Get to Your Notes!</p>
-        <p className="message">Sign In to get started !</p>
+        <p className="message">Sign In to get started! </p>
         {error && <p className="error" style={{ color: "red" }}>{error}</p>}
         <label>
           <input
@@ -74,7 +74,7 @@ function Login() {
         </label>
         <button className="submit" type="submit">Submit</button>
         <p className="signin">
-          New to LamBook? <Link to="/register"> Create an Account</Link>{" "}
+          New to LamBook ? &nbsp;<Link to="/register">Create an Account</Link>{" "}
         </p>
       </form>
     </>

@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { Select, InputLabel, MenuItem } from "@mui/material";
+import { Select, InputLabel, MenuItem, Button, Menu } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import "../styles/Dashboard.css";
-
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import BasicMenu from "../components/Menu";
 const style = {
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 600,
-  background: "rgba(255, 255, 255, 0.75)", // Semi-transparent background
-  boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.10)", // Custom box shadow
-  backdropFilter: "blur(4px)", // Blurring effect for the background
-  WebkitBackdropFilter: "blur(4px)", // For Safari support
-  borderRadius: "10px", // Rounded corners
-  border: "1px solid rgba(255, 255, 255, 0.18)", // Light border with transparency // This can be used if you want the background to match the theme color
-  p: 4, // Padding
+  width: 700,
+  background: "rgba(41, 10, 10, 0.35)",
+  boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.10)",
+  backdropFilter: "blur(4px)",
+  WebkitBackdropFilter: "blur(4px)",
+  borderRadius: "10px",
+  border: "1px solid rgba(255, 255, 255, 0.18)",
+  p: 4,
+  transition: "transform 0.3s ease-in-out",
 };
 function Dashboard() {
   const [entries, setEntries] = useState([]);
@@ -34,7 +36,6 @@ function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("username");
@@ -46,12 +47,18 @@ function Dashboard() {
       const authToken = localStorage.getItem("authToken");
       const response = await fetch("http://localhost:8080/book", {
         headers: {
+          method: "GET",
           Authorization: `Basic ${authToken}`,
         },
       });
       if (response.status === 200) {
         const data = await response.json();
         setEntries(data);
+      } else if (response.status === 404) {
+        setError("Start Adding Entries");
+        setTimeout(() => {
+          setError("");
+        }, 3000);
       } else {
         setError("Failed to fetch entries. Please try again later.");
         setTimeout(() => {
@@ -76,39 +83,45 @@ function Dashboard() {
     try {
       const authToken = localStorage.getItem("authToken");
       const apiURL = isEditing
-        ? `http://localhost:8080/book/update/${formData.id}`
+        ? `http://localhost:8080/book/update/${formData.entryID}`
         : `http://localhost:8080/book`;
       const method = isEditing ? "PUT" : "POST";
+
+      const requestBody = {
+        title: formData.title,
+        description: formData.description,
+        tag: formData.tag,
+      };
+
       const response = await fetch(apiURL, {
         method,
         headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type",
           Authorization: `Basic ${authToken}`,
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: formData.title,
-          description: formData.description,
-          tag: formData.tag,
-        }),
+        body: JSON.stringify(requestBody),
       });
+      if (isEditing) {
+        requestBody.entryID = formData.entryID;
+      }
+
+      console.log(requestBody);
       if (response.status === 201 || response.status === 200) {
         fetchEntries();
-        setShowModal(false);
-        setIsEditing(false);
-        setFormData({ title: "", description: "", tag: "" });
+        setShowModal(false); // Close modal
+        setIsEditing(false); // Reset editing state
+        setFormData({ title: "", description: "", tag: "" }); // Clear form data
       } else {
         setError("Failed to add entry. Please try again later.");
         setTimeout(() => {
-          setError("");
+          setError(""); // Clear error message after 3 seconds
         }, 3000);
       }
     } catch (error) {
       console.error(error);
       setError("Failed to add entry. Please try again later.");
       setTimeout(() => {
-        setError("");
+        setError(""); // Clear error message after 3 seconds
       }, 3000);
     }
   };
@@ -116,20 +129,19 @@ function Dashboard() {
   const handleDelete = async (id) => {
     try {
       const authToken = localStorage.getItem("authToken");
-      const response = await fetch(
-        `http://localhost:8080/book/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            Authorization: `Basic ${authToken}`,
-          },
-        }
-      );
-      if (response.status == 200) {
+      console.log(id);
+      const response = await fetch(`http://localhost:8080/book/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Basic ${authToken}`,
+        },
+      });
+      if (response.status === 200) {
         fetchEntries();
       } else {
-        setError("Failed to delete entry. Please try again later.");
+        console.log(response);
+        setError("Entry Deleted Succesfully");
+        fetchEntries();
         setTimeout(() => {
           setError("");
         }, 3000);
@@ -146,13 +158,13 @@ function Dashboard() {
   const handleEdit = (entry) => {
     setShowModal(true);
     setIsEditing(true);
-    setFormData(entry);
+    setFormData(entry.toString());
   };
 
   const handleAdd = () => {
     setShowModal(true);
     setIsEditing(false);
-    setFormData({ title: "", description: "", tag: "" });
+    setFormData({ title: "", description: "", tag: "", entryID: "" });
   };
 
   const styleLogOutButton = {
@@ -169,11 +181,36 @@ function Dashboard() {
     textAlign: "center",
   };
 
+  const handleNavigateToAccounts = () => {
+    navigate("/account");
+  };
+
+  const handleDarkMode = () => {
+    const body = document.body;
+    body.classList.toggle("dashboard-dark-mode");
+  };
+
   return (
     <div className="dashboard">
-      <button onClick={handleLogout} style={styleLogOutButton}>
-        Logout
-      </button>
+      <div
+        className="header-container"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          className="top-right-container"
+          style={{ marginLeft: "87%", marginBottom: "10px" }}
+        >
+          <BasicMenu
+            title={localStorage.getItem("username") || "User"}
+            onLogout={handleLogout}
+            onAccount={handleNavigateToAccounts}
+          ></BasicMenu>
+        </div>
+      </div>
       <h1>
         Welcome to DashBoard {localStorage.getItem("username").toUpperCase()}
       </h1>
@@ -183,7 +220,7 @@ function Dashboard() {
         onClick={handleAdd}
         className="add-entry-button"
         style={{
-          color: "royalblue",
+          color: "#D84040",
           backgroundColor: "transparent",
           border: "none",
           cursor: "pointer",
@@ -214,8 +251,16 @@ function Dashboard() {
               <p className="card-tag" style={{ fontFamily: "Playwrite AU SA" }}>
                 {entry.tag}
               </p>
-              <button onClick={() => handleEdit(entry)}>Edit</button>
-              <button onClick={() => handleDelete(entry.id.toString())}>
+              <button
+                onClick={() => handleEdit(entry.entryID)}
+                className="ed-btn"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(entry.entryID)}
+                className="ed-btn"
+              >
                 Delete
               </button>
             </div>
@@ -240,8 +285,8 @@ function Dashboard() {
             style={{
               fontFamily: "Major Mono Display",
               fontSize: "250%",
-              fontWeight: "bold",
-              color: "royalblue",
+              fontWeight: "900",
+              color: "#D84040",
               paddingBottom: "20px",
             }}
           >
@@ -250,6 +295,7 @@ function Dashboard() {
           <form onSubmit={handleSubmit}>
             <label
               style={{
+                color: "#D84040",
                 fontFamily: "Major Mono Display",
                 fontSize: "150%",
                 fontWeight: "bold",
@@ -257,7 +303,6 @@ function Dashboard() {
             >
               <br></br>
               Title:
-              <br></br>
               <br></br>
               <input
                 type="text"
@@ -277,17 +322,15 @@ function Dashboard() {
             </label>
             <br></br>
             <br></br>
-            <br></br>
             <label
               style={{
+                color: "#D84040",
                 fontFamily: "Major Mono Display",
                 fontSize: "150%",
                 fontWeight: "bold",
               }}
             >
               Description:
-              <br></br>
-              <br></br>
               <br></br>
               <textarea
                 value={formData.description}
@@ -307,20 +350,25 @@ function Dashboard() {
             </label>
             <br></br>
             <br></br>
-            <br></br>
-
             <label
               style={{
                 fontFamily: "Major Mono Display",
                 fontSize: "150%",
                 fontWeight: "bold",
+                color: "#D84040",
               }}
             >
               Tag:
-              <br></br>
-              <br></br>
               <InputLabel id="tag-select-label"></InputLabel>
               <Select
+                style={{
+                  value: "Please Select Tag",
+                  width: "20%",
+                  height: "50px",
+                  fontSize: "80%",
+                  fontFamily: "Chakra Petch",
+                  backgroundColor: "#8E1616",
+                }}
                 placeholder="Select Tag"
                 labelId="tag-select-label"
                 value={formData.tag}
@@ -339,13 +387,14 @@ function Dashboard() {
             <br></br>
             <br></br>
 
-            <button
-              type="submit"
-              style={{ fontSize: "150%", fontFamily: "Major Mono Display" }}
-            >
+            <button type="submit" className="add-entry-btn">
               {isEditing ? "Update" : "Add"} Entry
             </button>
-            <button type="button" onClick={() => setShowModal(false)}>
+            <button
+              className="add-entry-btn"
+              type="button"
+              onClick={() => setShowModal(false)}
+            >
               Cancel
             </button>
           </form>

@@ -135,16 +135,15 @@ public class LambookControllerDB {
     }
 
 
-    @GetMapping("/entries/{id}")
-    public ResponseEntity<?> getId(@PathVariable ObjectId id) {
+    @GetMapping("/entries/{entryID}")
+    public ResponseEntity<?> getId(@PathVariable long entryID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         Optional<Users> user = userServices.findByUserName(username);
-
         if (user.isPresent()) {
             Optional<Entries> entry = user.get().getEntries().stream()
-                    .filter(x -> x.getId().equals(id))
+                    .filter(x -> x.getEntryID()==entryID)
                     .findFirst();
 
             if (entry.isPresent()) {
@@ -171,15 +170,19 @@ public class LambookControllerDB {
 
 
     @DeleteMapping("/delete/{entryID}")
-    public ResponseEntity<?> deleteId(@PathVariable String entryID) {
-        ObjectId entry=new ObjectId(entryID);
+    public ResponseEntity<?> deleteId(@PathVariable long entryID) {
         Authentication auth=SecurityContextHolder.getContext().getAuthentication();
         String currentUser=auth.getName();
-        log.info("Deleting entry with ID: {} for user: {}", entry, currentUser);
+        log.info("Deleting entry with timestamp: {} for user: {}", entryID, currentUser);
         if(currentUser!=null){
-        lambookService.deleteEntry(currentUser, entry);
-            log.info("CORS Config applied for endpoint: /book/delete/{id}");
-            return new ResponseEntity<>(HttpStatus.OK);
+            try{
+                lambookService.deleteEntry(currentUser, entryID);
+                log.info("CORS Config applied for endpoint: /book/delete/{id}");
+                return new ResponseEntity<>(HttpStatus.OK);
+            }catch (RuntimeException e){
+                log.error("Error while deleting entry: {}", e.getMessage());
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
@@ -192,14 +195,14 @@ public class LambookControllerDB {
 //    }
 
     @PutMapping("/update/{entryId}")
-    public ResponseEntity<?> updateId(@PathVariable ObjectId entryId, @RequestBody Entries entry) {
+    public ResponseEntity<?> updateId(@PathVariable long entryId, @RequestBody Entries entry) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUser = auth.getName();
         Optional<Users> user = userServices.findByUserName(currentUser);
 
         if (user.isPresent() && user.get().getEntries() != null) {
             Optional<Entries> getEntry = user.get().getEntries().stream()
-                    .filter(x -> x.getId().equals(entryId))
+                    .filter(x -> x.getEntryID()==(entryId))
                     .findFirst();
 
             if (getEntry.isPresent()) {

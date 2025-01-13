@@ -1,0 +1,38 @@
+.nav-links{ 
+    display: flex !important;
+    gap: 20px 
+}
+
+nav{
+    background: rgba( 0, 0, 0, 0.35 )!important;
+box-shadow: 0 8px 32px 0 rgba(75, 0, 0, 0.37);
+backdrop-filter: blur( 11.5px );
+margin-left: 32%;
+-webkit-backdrop-filter: blur( 11.5px );
+border-radius: 10px;
+width: 35%;
+border: 1px solid rgba( 255, 255, 255, 0.18 );
+
+
+}
+.nav-item{
+
+    text-align: center !important;
+}
+.btn-links{
+    text-decoration: none;
+    /* width: 0% !important; */
+    margin-right:15px !important;
+    text-align: center !important;
+    color: white !important;
+    font-size: 130% !important;
+}
+.btn-container{
+    /* margin-right: 50px !important; */
+    
+}
+a{
+    text-decoration: none;
+    color: white;
+    
+}

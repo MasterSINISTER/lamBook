@@ -4,6 +4,7 @@ import { useState } from 'react'
 import "../styles/Home.css"
 import Login from './Login'
 import Heading from '../components/Heading'
+import Navbar from '../components/Navbar'
 function Home() {
   return (
     <div>
