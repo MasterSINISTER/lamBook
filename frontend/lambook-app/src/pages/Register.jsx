@@ -1,9 +1,10 @@
 import React from "react";
 import "../styles/Register.css";
-import Heading from "../components/Heading";
+import Heading from "../components/LoginHeading";
 import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
+import RegisterHeading from "../components/RegisterHeading";
 function Register() {
   const [formData, setFormData] = React.useState({
     username: "",
@@ -30,10 +31,21 @@ function Register() {
       setError("Passwords do not match");
       return;
     }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
+    if (formData.username.length < 3) {
+      setError("Username must be at least 3 characters long");
+      return;
+    }
+    
     setError("");
     try {
       const response = await axios.post("http://localhost:8080/public/add", {
-        userName: formData.userName,
+        userName: formData.username,
         password: formData.password,
       });
 
@@ -52,7 +64,7 @@ function Register() {
 
   return (
     <>
-      <Heading title="Register"/>
+      <RegisterHeading/>
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Join Our Lam Family</p>
         <p className="message">Signup now and get full access to our Lam. </p>
@@ -68,7 +80,7 @@ function Register() {
             type="text"
             className="input"
             name="userName"
-            value={formData.userName}
+            value={formData.username}
             onChange={handleChange}
           />
           <span>Username</span>

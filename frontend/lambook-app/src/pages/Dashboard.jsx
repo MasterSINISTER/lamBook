@@ -6,8 +6,9 @@ import Modal from "@mui/material/Modal";
 import { Select, InputLabel, MenuItem, Button, Menu } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import "../styles/Dashboard.css";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
+// import Avatar from "@mui/material/Avatar";
+// import Stack from "@mui/material/Stack";
+// import TypeIt from "typeit-react";
 import BasicMenu from "../components/Menu";
 const style = {
   position: "absolute",
@@ -211,9 +212,9 @@ function Dashboard() {
           ></BasicMenu>
         </div>
       </div>
-      <h1>
-        Welcome to DashBoard {localStorage.getItem("username").toUpperCase()}
-      </h1>
+        <h1>
+          Welcome to DashBoard {localStorage.getItem("username").toUpperCase()}
+        </h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <EditNoteIcon sx={{ fontSize: 35, margin: 0 }}></EditNoteIcon>
       <button

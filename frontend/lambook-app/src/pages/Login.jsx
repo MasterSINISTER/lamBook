@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import Heading from "../components/Heading";
+import Heading from "../components/LoginHeading";
 
 function Login() {
     const [username, setUsername] = useState('');
@@ -43,9 +43,18 @@ function Login() {
     };
   
 
+    const headingStyle={
+        fontFamily: "Major Mono Display !important",
+        fontWeight: "bold",
+        fontSize: "600%",
+        textAlign: "center !important",
+        textUnderlineOffset: "20px",
+        color: "#D84040",
+    
+    }
   return (
     <>
-    <Heading title="LamBook"></Heading>
+    <Heading style={headingStyle}/>
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Get to Your Notes!</p>
         <p className="message">Sign In to get started! </p>

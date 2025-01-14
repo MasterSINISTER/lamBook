@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
-import Heading from "../components/Heading";
+import Heading from "../components/LoginHeading";
 import { Button } from "@mui/material";
+import AdminHeading from "../components/AdminHeading";
 
 function AdminPortal() {
   const [username, setUsername] = useState("");
@@ -45,7 +46,7 @@ function AdminPortal() {
 
   return (
     <>
-      <Heading title="Admin Portal"></Heading>
+      <AdminHeading/>
 
       <form className="form" onSubmit={handleSubmit}>
         <p className="title">Log In Master</p>

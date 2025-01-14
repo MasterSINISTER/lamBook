@@ -7,3 +7,9 @@
     text-underline-offset: 20px;
     color: #D84040;
 }
+.heading-container{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 10px !important;
+}

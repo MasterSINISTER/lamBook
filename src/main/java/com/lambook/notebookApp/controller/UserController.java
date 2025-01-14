@@ -28,16 +28,39 @@ public class UserController {
     private static final PasswordEncoder passwordEncoder=new BCryptPasswordEncoder();
 
     @PutMapping
-    public ResponseEntity<?>updateUser(@RequestBody Users users){
-   Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-   String userName=authentication.getName();
-       Optional<Users> userInDB=userService.findByUserName(userName);
-           userInDB.get().setUserName(users.getUserName());
-           userInDB.get().setPassword(passwordEncoder.encode(users.getPassword()));
-           userService.saveUser(userInDB.get());
-           System.out.println("Success");
-       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> updateUser(@RequestBody Users users) {
+        // Get the currently authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
+        // Find the user in the database
+        Optional<Users> userInDB = userService.findByUserName(userName);
+
+        if (userInDB.isPresent()) {
+            Users existingUser = userInDB.get();
+
+            // Update the username
+            existingUser.setUserName(users.getUserName());
+            existingUser.setName(users.getUserName().substring(0,4));
+
+            // Update the password only if it's provided and not empty
+            if (users.getPassword() != null && !users.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(users.getPassword()));
+                existingUser.setName(users.getUserName().substring(0,4));
+            }
+
+            // Save the updated user
+
+            userService.saveUser(existingUser);
+
+            System.out.println("Update Success");
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            System.out.println("User not found");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
 
     @GetMapping("/verify")
     public ResponseEntity<?>userExist(){
