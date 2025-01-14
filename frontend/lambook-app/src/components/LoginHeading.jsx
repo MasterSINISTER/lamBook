@@ -18,7 +18,7 @@ function Heading() {
     <div className="heading-container">
       <TypeIt
         options={{
-          speed: 100,
+          speed: 200,
           waitUntilVisible: true,
           afterComplete: (instance) => {
             // Hide the cursor after typing animation is complete
