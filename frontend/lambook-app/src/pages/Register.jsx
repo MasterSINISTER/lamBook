@@ -79,7 +79,7 @@ function Register() {
             placeholder=""
             type="text"
             className="input"
-            name="userName"
+            name="username"
             value={formData.username}
             onChange={handleChange}
           />
