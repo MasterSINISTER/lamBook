@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Slf4j
+
 @Configuration
 
 public class corsConfig implements WebMvcConfigurer {
@@ -17,6 +17,5 @@ public class corsConfig implements WebMvcConfigurer {
                 .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-    log.info("CORS Config applied for endpoint: /book/delete/{id}");
 }
 }

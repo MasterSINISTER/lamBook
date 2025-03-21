@@ -93,8 +93,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/book")
-
-
 @CrossOrigin
 public class LambookControllerDB {
 

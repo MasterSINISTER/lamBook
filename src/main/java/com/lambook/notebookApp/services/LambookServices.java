@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.*;
 
-@Slf4j
 @Component
 public class LambookServices {
     @Autowired
@@ -69,7 +68,6 @@ public class LambookServices {
             boolean entryRemoved = user.get().getEntries().removeIf(x -> x.getEntryID()==entryID);
             if(entryRemoved){
             userServices.saveUser(user.get());
-            log.info("Working Till Here");// Save the updated user
             lambookRepo.deleteByEntryID(entryID);  // Delete the entry
             }
         } else {
