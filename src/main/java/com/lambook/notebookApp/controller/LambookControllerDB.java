@@ -4,9 +4,6 @@ import com.lambook.notebookApp.pages.Entries;
 import com.lambook.notebookApp.pages.Users;
 import com.lambook.notebookApp.services.LambookServices;
 import com.lambook.notebookApp.services.UserServices;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 //
 //@RestController
@@ -94,7 +90,7 @@ import java.util.stream.Collectors;
 //}
 
 
-@Slf4j
+
 @RestController
 @RequestMapping("/book")
 
@@ -112,24 +108,24 @@ public class LambookControllerDB {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
-            log.info("Authenticated username: {}", username);
+
             Optional<Users> user = userServices.findByUserName(username);
             if (user.isPresent()) {
-                log.info("User found: {}", user.get().getUserName());
+
                 List<Entries> list = user.get().getEntries();
                 if (list != null && !list.isEmpty()) {
-                    log.info("Entries found: {}", list.size());
+
                     return new ResponseEntity<>(list, HttpStatus.OK);
                 } else {
-                    log.warn("No entries found for user: {}", username);
+
                     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
                 }
             } else {
-                log.error("User not found for username: {}", username);
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         } catch (Exception e) {
-            log.error("Error while fetching user entries: ", e);
+
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -162,7 +158,6 @@ public class LambookControllerDB {
 //            log.info("Entry created successfully for user: {}", username);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
-            log.error("Error while creating entry: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -173,14 +168,13 @@ public class LambookControllerDB {
     public ResponseEntity<?> deleteId(@PathVariable long entryID) {
         Authentication auth=SecurityContextHolder.getContext().getAuthentication();
         String currentUser=auth.getName();
-        log.info("Deleting entry with timestamp: {} for user: {}", entryID, currentUser);
+
         if(currentUser!=null){
             try{
                 lambookService.deleteEntry(currentUser, entryID);
-                log.info("CORS Config applied for endpoint: /book/delete/{id}");
                 return new ResponseEntity<>(HttpStatus.OK);
             }catch (RuntimeException e){
-                log.error("Error while deleting entry: {}", e.getMessage());
+
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
